@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Garbage Collection System</title>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+
+  <!-- Syles and alignment for various containers-->
+  <style>
+    /* Style for chart containers */
+    body {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .chart-container {
+      width: 5000; /* Adjust the width as needed */
+      height: 1000; /* Adjust the height as needed */
+      margin: 10px; /* Add some margin for spacing */
+      float: left; /* Float the containers left to place them side by side */
+    }
+
+    /* Clear floating after the charts */
+    .clearfix:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .side-by-side {
+      display: inline-block;
+      margin-right: 20px; /* Adjust the spacing between elements as needed */
+    }
+
+    .container {
+      width: 99%;
+      height: 400px;
+      border: 5px solid #ccc;
+      display: flex; /* Use flexbox for layout */
+      background-color: #ecf3f7; /* Set the background color */
+    }
+
+    .container-graphs {
+      width: 99%;
+      height: 1000px;
+      border: 5px solid #090808e3;
+      display: flex; /* Use flexbox for layout */
+      background-color: #ecf3f7; /* Set the background color */
+    }
+
+    /* Style for each section */
+    .section {
+      flex: 1; /* Distribute space evenly among sections */
+      border: 1px solid #ddd;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* Style for the cylinder container */
+    .cylinder-container {
+      width: 30px;
+      height: 30px;
+      position: relative;
+    }
+
+    /* Style for the cylinder body */
+    .cylinder {
+      width: 100px;
+      height: 170px;
+      background-color: #ccc;
+      border-radius: 40px;
+      position: absolute;
+      bottom: 0;
+      left: 50px;
+    }
+
+    /* Style for the fill level */
+    .fill-level {
+      width: 100%;
+      height: var(--fill-height, 0);
+      background-color: #95db98;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      transition: height 0.3s ease-in-out;
+    }
+
+    .mix-container {
+      display: flex; /* Use flexbox for layout */
+      border: 1px solid #ddd;
+      border: 5px solid #090808e3;
+    }
+
+    .rank-table-container{
+      flex-basis: 50%; /* Adjust the width as needed */
+      padding: 10px; /* Add padding for spacing */
+    }
+
+    .pie-chart-container {   
+      flex-basis: 15%;
+      margin-left: 100px;
+      margin-top: 40px;
+    }
+
+  </style>
+</head>
+
+<!-- Title ---->
+<h1><center>Smart Garbage Collection System <center></h1>
+<br>
+<h2> <center>Real-time Data </center> </h2>
+
+<div class="container">
+  <!-- First section -->
+  <div class="section">
+    <h2><center> Organic Waste</centre><center> </h3>
+      
+    <h4 class="side-by-side">Temperature :</h3>
+    <h4 class="side-by-side" id="Temperature_Organic"></h3>
+    <br>
+    <h4 class="side-by-side">Humidity :</h3>
+    <h4 class="side-by-side" id="Humidity_Organic"></h3>
+    <br>
+    <h4 class="side-by-side">Distance :</h3>
+    <h4 class="side-by-side" id="Distance_Organic"></h3>
+
+    <div class="side-by-side">
+      <div class="cylinder-container">
+        <div class="cylinder">
+          <div class="fill-level" id="fillLevelOrganic"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second section -->
+  <div class="section">
+    <h2><center> PMD Waste</centre><center> </h3>
+      
+      <h4 class="side-by-side">Temperature :</h3>
+      <h4 class="side-by-side" id="Temperature_PMD"></h3>
+      <br>
+      <h4 class="side-by-side">Humidity :</h3>
+      <h4 class="side-by-side" id="Humidity_PMD"></h3>
+      <br>
+      <h4 class="side-by-side">Distance :</h3>
+      <h4 class="side-by-side" id="Distance_PMD"></h3>
+    
+      <div class="side-by-side">
+        <div class="cylinder-container">
+          <div class="cylinder">
+            <div class="fill-level" id="fillLevelPMD"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Third section -->
+  <div class="section">
+    <h2><center> Paper Waste</centre><center> </h3>
+      
+      <h4 class="side-by-side">Temperature :</h3>
+      <h4 class="side-by-side" id="Temperature_Paper"></h3>
+      <br>
+      <h4 class="side-by-side">Humidity :</h3>
+      <h4 class="side-by-side" id="Humidity_Paper"></h3>
+      <br>
+      <h4 class="side-by-side">Distance :</h3>
+      <h4 class="side-by-side" id="Distance_Paper"></h3>
+  
+      <div class="side-by-side">
+        <div class="cylinder-container">
+          <div class="cylinder">
+            <div class="fill-level" id="fillLevelPaper"></div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+<br>
+
+<!-- Graph Location-->
+<h2> <center>Graphical Analysis </center> </h2> 
+
+<div class="container-graphs">
+  <!-- Display the charts side by side -->
+  <div class="clearfix">
+    <!-- Chart container 1 -->
+    <div class="chart-container">
+      <canvas id="dataChart1" width="400" height="300"></canvas>
+    </div>
+
+    <!-- Chart container 2 -->
+    <div class="chart-container">
+      <canvas id="dataChart2" width="400" height="300"></canvas>
+    </div>
+
+    <!-- Chart container 3 -->
+    <div class="chart-container">
+      <canvas id="dataChart3" width="400" height="300"></canvas>
+    </div>
+  </div>
+  
+  <div class="clearfix">
+    <!-- Chart container 4 -->
+    <div class="chart-container">
+      <canvas id="dataChart4" width="400" height="300"></canvas>
+    </div>
+
+    <!-- Chart container 5 -->
+    <div class="chart-container">
+      <canvas id="dataChart5" width="400" height="300"></canvas>
+    </div>
+
+    <!-- Chart container 6 -->
+    <div class="chart-container">
+      <canvas id="dataChart6" width="400" height="300"></canvas>
+    </div>
+  </div>
+
+  <div class="clearfix">
+    <!-- Chart container 7 -->
+    <div class="chart-container">
+      <canvas id="dataChart7" width="400" height="300"></canvas>
+    </div>
+
+    <!-- Chart container 8 -->
+    <div class="chart-container">
+      <canvas id="dataChart8" width="400" height="300"></canvas>
+    </div>
+
+    <!-- Chart container 9 -->
+    <div class="chart-container">
+      <canvas id="dataChart9" width="400" height="300"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Rank table and pie-chart generation-->
+<h2> <center>Rankings </center> </h2> 
+
+<div class="mix-container">
+  <div id="rank-table-container"></div>
+
+  <div class="pie-chart-container">
+    <canvas id="myPieChart"></canvas>
+    <h4><center>House ranked 1 in Neighbourhood_1</center></h3>
+  </div>
+</div>
+
+<!-- JS logic-->
+<script src="app.js"></script>
+  
+</body>
+</html>
