@@ -1,4 +1,4 @@
-# This script captures images using the RPi camera and displays predictions on the image by collaborating with a ML model in google colab.
+# This script captures images using the RPi camera and displays predictions by collaborating with a ML model in google colab.
 
 from picamera import PiCamera
 from time import sleep
