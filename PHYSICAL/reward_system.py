@@ -1,4 +1,4 @@
-# Script to generate rankings for sensor data in the real-time databse.
+# Script to generate rankings for sensor data in the firebase real-time databse.
 
 import firebase_admin
 from firebase_admin import credentials, db
