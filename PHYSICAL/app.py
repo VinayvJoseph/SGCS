@@ -1,4 +1,4 @@
-# SGCS application code.
+# SGCS application code(03 June, 2024).
 
 import os
 import socket
