@@ -1,3 +1,4 @@
+// Logic for services of SGCS  which is linked to the HTML script index.html
 
 // Initialize Firebase
 var firebaseConfig = {
