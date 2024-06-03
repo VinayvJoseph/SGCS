@@ -1,4 +1,4 @@
-# Machine Learning model for Waste Classification
+# Machine Learning model for Waste Classification.
 # Code to be run only in google colab environment.
 
 # CELL 1
